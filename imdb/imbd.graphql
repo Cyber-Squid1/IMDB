@@ -1,0 +1,37 @@
+type Query{
+    getAllMovie: [Movie]
+    getReviewsByMovie(MovieID: ID!): [Review]
+    getMovieReviews(MovieID:ID!): [Review]
+}
+
+type Mutation {
+    # signInUser:
+    addMovie(MovieName:String!,Description:String!,Genre:String!): Movie
+    addReview(MovieId:ID!,Rating: Number!,Comment:String!): Review
+}
+
+type User {
+  id: ID!
+  Eamil: String!
+  Passsword: String!
+}
+
+type Movie {
+    id: ID!
+    MovieName: String!
+    Description: String!
+    ReleaseDate: String!
+    Genre: [Genre]
+    Review: [Review]
+}
+
+type Genre {
+    id: ID!
+    GenreName: String!
+}
+
+type Review {
+    id: ID!
+    Rating: Int!
+    Comment: String!
+}
