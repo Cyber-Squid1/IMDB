@@ -2,13 +2,27 @@ type Query{
     getAllMovie: [Movie]
     getReviewsByMovie(MovieID: ID!): [Review]
     getMovieReviews(MovieID:ID!): [Review]
+    getGenreById(GenreID:ID!): Genre
 }
 
-type Mutation {
-    # signInUser:
-    addMovie(MovieName:String!,Description:String!,Genre:String!): Movie
-    addReview(MovieId:ID!,Rating: Number!,Comment:String!): Review
+input UserInput {
+    Email: String!
+    Password: String!
 }
+
+
+type Mutation {
+    signUpUser(newUser:UserInput!): User
+    addMovie(MovieName:String!,Description:String!,Genre:String!): Movie
+    addReview(MovieId:ID!,Rating: Int!,Comment:String!): Review
+    loginUser(userData:UserInput!): Token
+}
+
+# This is the authentication token produced by JWT
+type Token{
+    token: String!
+}
+
 
 type User {
   id: ID!

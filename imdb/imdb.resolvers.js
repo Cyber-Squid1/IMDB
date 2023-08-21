@@ -1,3 +1,4 @@
+const { AuthenticationError } = require('apollo-server-express')
 const imdbModel = require('./imdb.model')
 
 module.exports={
@@ -6,20 +7,35 @@ module.exports={
             console.log('Get all Movies')
             await imdbModel.getAllMovies()
         },
-        getMovieReview: async (_,args,)=>{
+        // getMovieReview: async (_,args)=>{
+        //     const movie = await imdbModel.getMovieById(args.MovieID)
 
+        // },
+        getGenreById: async (_,args)=>{
+            return await imdbModel.getGenreById(args.GenreID)
         }
 
     },
     Mutation: {
         addMovie: async (_,args)=>{
             console.log("Adding new Movie")
-            return imdbModel.addMovie(args.MovieName,args.Description,args.Genre,args.ReleaseDate)
+            const genre=getGenreById(args.GenreID)
+            return imdbModel.addMovie(args.MovieName,args.Description,genre.GenreName,args.ReleaseDate)
         },
-        signInUser: async (_,)=>{
-
+        signUpUser: async (_,{newUser},)=>{
+            const check=imdbModel.getUserByEmail(newUser.Email)
+            if (check){
+                throw new AuthenticationError(`User already exists with email ${newUser.Email}`)
+            }
+            const createdUser=await imdbModel.createdUser(newUser)
+            return createdUser
         },
-        addReview
+        loginUser: async (_,args)=>{
+            const check=imdbModel.getUserByEmail(newUser.Email)
+            if (check){
+                throw new AuthenticationError(`User already exists with email ${newUser.Email}`)
+            }
+        }
 
     }
 }
