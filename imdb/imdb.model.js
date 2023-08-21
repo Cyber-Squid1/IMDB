@@ -1,7 +1,7 @@
 const {User,Genre,Movie,Review} =require('./imdb.mongo')
 
 async function getAllMovies(){
-    return await Movie.find({},{}).populate('genre')
+    return await Movie.find({})//.populate('Genre')
 }
 
 async function getMovieById(id){
@@ -9,7 +9,7 @@ async function getMovieById(id){
 }
 
 async function getGenreId(id){
-    return await Genre.findById(id)
+    return await Genre.findOne({_id:id})
 }
 
 async function addMovie(name,description,genre,releasedate){
@@ -39,8 +39,24 @@ async function addMovie(name,description,genre,releasedate){
 //     });
 // }
 
+async function addMovieReview(id,reviewData){
+    await Review.create({
+        Rating: reviewData.Rating,
+        Comment: reviewData.Comment
+    })
+    .then((result) => {
+        return result
+    }).catch((err) => {
+        console.error(err)
+    });
+}
+
 async function getUserByEmail(email){
     return await User.findOne({Email:email})
+}
+
+async function upadteMovieDetails(data){
+
 }
 
 async function createUser(userData){
@@ -64,10 +80,22 @@ async function addReview(id,rating,comment){
     }
 }
 
+async function checkPassword(userData){
+    const dbPassword=await getUserByEmail(userData.Email)
+    if (dbPassword.Password == userData.Password){
+        return true
+    }
+    return false
+}
+
 module.exports={
     getAllMovies,
     addMovie,
     getMovieById,
     addReview,
-    getUserByEmail
+    getUserByEmail,
+    checkPassword,
+    getGenreId,
+    createUser,
+    addMovieReview
 }

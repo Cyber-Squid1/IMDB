@@ -1,18 +1,19 @@
 const { AuthenticationError } = require('apollo-server-express')
 const imdbModel = require('./imdb.model')
+const jwt = require('jsonwebtoken')
 
 module.exports={
     Query: {
         getAllMovie: async ()=>{
             console.log('Get all Movies')
-            await imdbModel.getAllMovies()
+            return await imdbModel.getAllMovies()
         },
         // getMovieReview: async (_,args)=>{
         //     const movie = await imdbModel.getMovieById(args.MovieID)
 
         // },
         getGenreById: async (_,args)=>{
-            return await imdbModel.getGenreById(args.GenreID)
+            return await imdbModel.getGenreId(args.GenreID)
         }
 
     },
@@ -27,14 +28,25 @@ module.exports={
             if (check){
                 throw new AuthenticationError(`User already exists with email ${newUser.Email}`)
             }
-            const createdUser=await imdbModel.createdUser(newUser)
+            const createdUser=await imdbModel.createUser(newUser)
             return createdUser
         },
-        loginUser: async (_,args)=>{
-            const check=imdbModel.getUserByEmail(newUser.Email)
-            if (check){
-                throw new AuthenticationError(`User already exists with email ${newUser.Email}`)
+        loginUser: async (_,{userData})=>{
+            const check=imdbModel.getUserByEmail(userData.Email)
+            if (!check){
+                throw new AuthenticationError(`User does not exist with email ${userData.Email}`)
             }
+            const matchPassword=imdbModel.checkPassword(userData)
+            if(!matchPassword){
+                throw new AuthenticationError('Please Enter correct login Credentials')
+            }
+            // JWT_SECRET is stored in and enviornment file (.env) and is not pushed to github during real world production
+            // This being a test the .env file is also pushed to github 
+            const token= jwt.sign({userID: check.Email},process.env.JWT_SECRET)
+            return {token}
+        },
+        addReview: async (_,args)=>{
+            return await imdbModel.addMovieReview(args.MovieID,args.Rating,args.Comment)
         }
 
     }

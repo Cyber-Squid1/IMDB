@@ -29,6 +29,7 @@ async function startApolloServer() {
 
     app.listen(4000, () => {
         console.log('Running Apollo GraphQL server...');
+        console.log()
     });
 }
 
