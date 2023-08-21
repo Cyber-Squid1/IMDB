@@ -1,4 +1,4 @@
-const {User,Genre,Movie,Review} =require('./imdb.mongo')
+const {User,Genre,Movie,Review} = require('./imdb.mongo.js')
 
 async function getAllMovies(){
     return await Movie.find({})//.populate('Genre')
@@ -12,12 +12,25 @@ async function getGenreId(id){
     return await Genre.findOne({_id:id})
 }
 
+async function addGenre(genre){
+    try{
+        await Genre.updateOne(
+            {GenreName: genre.GenreName},
+            genre,
+            {upsert:true}
+        ) 
+    }
+    catch(err){
+        console.error(`Could not add Genre! Error: ${err}`)
+    }
+}
+
 async function addMovie(name,description,genre,releasedate){
     const newMovie={
         name,
         description,
         releasedate,
-        genre,
+        genre: [],
         review: []
     };
     try{
@@ -27,8 +40,8 @@ async function addMovie(name,description,genre,releasedate){
             {upsert:true}
         ) 
     }
-    catch(error){
-        console.error(`Could not add movie! Error: ${error}`)
+    catch(err){
+        console.error(`Could not add movie! Error: ${err}`)
     }
 }
 
@@ -120,5 +133,6 @@ module.exports={
     createUser,
     addMovieReview,
     getReviewByID,
-    upadteMovieDetails
+    upadteMovieDetails,
+    addGenre
 }
