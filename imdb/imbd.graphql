@@ -1,7 +1,7 @@
 type Query{
     getAllMovie: [Movie]
     getReviewsByMovie(MovieID: ID!): [Review]
-    getMovieReviews(MovieID:ID!): [Review]
+    getMovieReview(MovieID:ID!): [Review]
     getGenreById(GenreID:ID!): Genre
 }
 

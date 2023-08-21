@@ -8,10 +8,17 @@ module.exports={
             console.log('Get all Movies')
             return await imdbModel.getAllMovies()
         },
-        // getMovieReview: async (_,args)=>{
-        //     const movie = await imdbModel.getMovieById(args.MovieID)
+        getMovieReview: async (_,args)=>{
+            let allreviews=[]
+            const movie = await imdbModel.getMovieById(args.MovieID)
+            const reviews=movie.Review
+            reviews.array.forEach(async (element) => {
+                const item=await imdbModel.getReviewByID(element)
+                allreviews.push(item)
+            });
+            return allreviews
 
-        // },
+        },
         getGenreById: async (_,args)=>{
             return await imdbModel.getGenreId(args.GenreID)
         }

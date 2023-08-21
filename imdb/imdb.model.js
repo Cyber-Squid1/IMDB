@@ -32,12 +32,9 @@ async function addMovie(name,description,genre,releasedate){
     }
 }
 
-// async function getMovieReviews(id){
-//     const reviews= await getMovieById(id)
-//     reviews.array.forEach((reviews.Review._id) => {
-//         return
-//     });
-// }
+async function getReviewByID(id){
+    return await Review.findById(id)
+}
 
 async function addMovieReview(id,reviewData){
     await Review.create({
@@ -73,10 +70,25 @@ async function createUser(userData){
 async function addReview(id,rating,comment){
     const matchedMovie=getMovieById(id)
     if (matchedMovie){
-        Review.insertIOne({
+        await Review.create({
             Rating:rating,
             Comment: comment
         })
+        .then(async (result) => {
+            // Update the review array in Movies schema by adding the new Review objectID in the array
+            try{
+                await Movie.updateOne(
+                    {_id: id},
+                    { $push: { Review: [result._id] } },
+                    {upsert:true}
+                ) 
+            }
+            catch(error){
+                console.error(`Could not add movie! Error: ${error}`)
+            }
+        }).catch((err) => {
+            console.error(err)
+        });
     }
 }
 
@@ -97,5 +109,6 @@ module.exports={
     checkPassword,
     getGenreId,
     createUser,
-    addMovieReview
+    addMovieReview,
+    getReviewByID
 }
