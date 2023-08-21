@@ -26,6 +26,7 @@ const movieSchema = Schema({
     },
     GenreName: {
         type: String,
+        
         ref: 'genres',
         required: true
     },

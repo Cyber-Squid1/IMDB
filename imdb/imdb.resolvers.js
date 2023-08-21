@@ -54,6 +54,9 @@ module.exports={
         },
         addReview: async (_,args)=>{
             return await imdbModel.addMovieReview(args.MovieID,args.Rating,args.Comment)
+        },
+        updateMovie: async(_,args)=>{
+            return await imdbModel.upadteMovieDetails(args)
         }
 
     }

@@ -53,7 +53,16 @@ async function getUserByEmail(email){
 }
 
 async function upadteMovieDetails(data){
-
+    try{
+        return await Movie.updateOne(
+            {_id: data.MovieID},
+            ...data,
+            {upsert:true}
+        ) 
+    }
+    catch(error){
+        console.error(`Could not add movie! Error: ${error}`)
+    }
 }
 
 async function createUser(userData){
@@ -110,5 +119,6 @@ module.exports={
     getGenreId,
     createUser,
     addMovieReview,
-    getReviewByID
+    getReviewByID,
+    upadteMovieDetails
 }

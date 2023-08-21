@@ -10,12 +10,14 @@ input UserInput {
     Password: String!
 }
 
+Scalar Date
 
 type Mutation {
     signUpUser(newUser:UserInput!): User
     addMovie(MovieName:String!,Description:String!,Genre:String!): Movie
     addReview(MovieId:ID!,Rating: Int!,Comment:String!): Review
     loginUser(userData:UserInput!): Token
+    updateMovie(MovieID:ID!,MovieName:String,Description:String,ReleaseDate:Date,Genre:ID): Movie
 }
 
 # This is the authentication token produced by JWT
@@ -34,7 +36,7 @@ type Movie {
     id: ID!
     MovieName: String!
     Description: String!
-    ReleaseDate: String!
+    ReleaseDate: Date!
     Genre: [Genre]
     Review: [Review]
 }
